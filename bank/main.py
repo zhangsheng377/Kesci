@@ -14,6 +14,9 @@ from sklearn.utils import shuffle
 from sklearn.svm import SVC
 from sklearn import tree
 from sklearn.decomposition import PCA
+import autosklearn.classification
+# import autokeras
+import tpot
 
 
 def handle_data(data, data_handled_path, need_shuffle=False, need_decomposition=False):
@@ -62,7 +65,8 @@ test_data_path = data_path.joinpath("test_set.csv")
 test_data = pd.read_csv(test_data_path)
 train_data_handled_path = data_path.joinpath("train_handled_set.csv")
 test_data_handled_path = data_path.joinpath("test_handled_set.csv")
-result_path = data_path.joinpath("predict_set.csv")
+result_path = path.joinpath("result")
+result_data_path = data_path.joinpath("predict_set.csv")
 
 train_data, train_lable = handle_data(train_data, train_data_handled_path, need_shuffle=False, need_decomposition=False)
 # print(train_data)
@@ -72,7 +76,7 @@ train_data, train_lable = handle_data(train_data, train_data_handled_path, need_
 # 0.9012125403528571 n_estimators=100 0.8827270059637511
 # 0.9016471277305751 n_estimators=200 0.8825690280744943
 # 0.9032270626044709 n_estimators=500 0.8823715479138569
-clf = AdaBoostClassifier(n_estimators=100)
+# clf = AdaBoostClassifier(n_estimators=100)
 # scores = cross_val_score(clf, train_data, train_lable, cv=5, verbose=5)
 # print(scores.mean())
 
@@ -102,6 +106,14 @@ clf = AdaBoostClassifier(n_estimators=100)
 # scores = cross_val_score(clf, train_data, train_lable, cv=5, verbose=5)
 # print(scores.mean())
 
+# clf = autosklearn.classification.AutoSklearnClassifier()
+# scores = cross_val_score(clf, train_data, train_lable, cv=5, verbose=5)
+# print(scores.mean())
+
+# clf = autokeras.classifier()
+
+clf = tpot.TPOTClassifier(verbosity=3, periodic_checkpoint_folder="tpot")
+
 clf.fit(train_data, train_lable)
 test_data, test_ID = handle_data(test_data, test_data_handled_path, need_shuffle=False)
 # print(test_data)
@@ -109,7 +121,13 @@ test_data, test_ID = handle_data(test_data, test_data_handled_path, need_shuffle
 predict = clf.predict(test_data)
 # print(predict)
 result = pd.DataFrame({'ID': test_ID, 'pred': predict})
-result.to_csv(result_path, index=False)
+result.to_csv(result_data_path, index=False)
+
+tpot.export('tpot_pipeline.py')
+
+# print(clf.cv_results_)
+# print(clf.sprint_statistics())
+# print(clf.show_models())
 
 # AdaBoostClassifier(n_estimators=100) need_shuffle=True 0.49890420
 # AdaBoostClassifier(n_estimators=100) need_shuffle=False 0.67963529
@@ -117,3 +135,6 @@ result.to_csv(result_path, index=False)
 # AdaBoostClassifier(n_estimators=200) need_shuffle=False need_decomposition=True 0.52142756
 # AdaBoostClassifier(n_estimators=200) need_shuffle=False need_decomposition=False 0.65858919
 # AdaBoostClassifier(n_estimators=150) need_shuffle=False need_decomposition=False 0.65809112
+# autosklearn.classification.AutoSklearnClassifier() need_shuffle=False need_decomposition=False 0.68977183
+# autosklearn.classification.AutoSklearnClassifier() need_shuffle=False need_decomposition=False 0.71657159
+# tpot.TPOTClassifier(verbosity=2) 0.73911188
