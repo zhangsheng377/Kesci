@@ -66,7 +66,7 @@ test_data = pd.read_csv(test_data_path)
 train_data_handled_path = data_path.joinpath("train_handled_set.csv")
 test_data_handled_path = data_path.joinpath("test_handled_set.csv")
 result_path = path.joinpath("result")
-result_data_path = data_path.joinpath("predict_set.csv")
+result_data_path = result_path.joinpath("predict_set.csv")
 
 train_data, train_lable = handle_data(train_data, train_data_handled_path, need_shuffle=False, need_decomposition=False)
 # print(train_data)
