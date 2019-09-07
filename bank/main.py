@@ -112,7 +112,7 @@ train_data, train_lable = handle_data(train_data, train_data_handled_path, need_
 
 # clf = autokeras.classifier()
 
-clf = tpot.TPOTClassifier(verbosity=3, periodic_checkpoint_folder="tpot")
+clf = tpot.TPOTClassifier(verbosity=3, periodic_checkpoint_folder="tpot", warm_start=True)
 
 clf.fit(train_data, train_lable)
 test_data, test_ID = handle_data(test_data, test_data_handled_path, need_shuffle=False)
@@ -123,7 +123,7 @@ predict = clf.predict(test_data)
 result = pd.DataFrame({'ID': test_ID, 'pred': predict})
 result.to_csv(result_data_path, index=False)
 
-tpot.export('tpot_pipeline.py')
+clf.export('tpot_pipeline.py')
 
 # print(clf.cv_results_)
 # print(clf.sprint_statistics())
