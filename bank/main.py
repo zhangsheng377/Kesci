@@ -14,7 +14,7 @@ from sklearn.utils import shuffle
 from sklearn.svm import SVC
 from sklearn import tree
 from sklearn.decomposition import PCA
-import autosklearn.classification
+# import autosklearn.classification
 # import autokeras
 import tpot
 
